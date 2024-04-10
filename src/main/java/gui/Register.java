@@ -1,6 +1,8 @@
 package gui;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Register {
 
@@ -25,12 +27,17 @@ public class Register {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setTitle("Fiado - " + employee);
-
+        registerButton.addActionListener(registerButtonAction());
     }
 
 
     private void createUIComponents() {
         SpinnerNumberModel sm = new SpinnerNumberModel(1, 1, 100, 1);
         productQuantitySpinner = new JSpinner(sm);
+    }
+
+    private ActionListener registerButtonAction() {
+        //TODO
+        return null;
     }
 }
