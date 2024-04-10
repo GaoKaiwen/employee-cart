@@ -1,7 +1,7 @@
-import gui.GuiService;
+import gui.Main;
 
 public class ApplicationRunner {
     public void run() {
-        new GuiService().run();
+        new Main();
     }
 }
