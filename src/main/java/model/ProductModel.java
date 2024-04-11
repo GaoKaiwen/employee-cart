@@ -1,9 +1,13 @@
 package model;
 
-public class productModel {
+import utils.BigDecimalUtils;
+
+import java.math.BigDecimal;
+
+public class ProductModel {
 
     private String description;
-    private float price;
+    private BigDecimal price;
     private int quantity;
 
     public String getDescription() {
@@ -14,11 +18,15 @@ public class productModel {
         this.description = description;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public String getPrettyPrice() {
+        return BigDecimalUtils.toPrettyString(price);
+    }
+
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

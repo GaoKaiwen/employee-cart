@@ -1,5 +1,7 @@
 package gui;
 
+import service.RegisterService;
+
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.Objects;
@@ -29,7 +31,9 @@ public class Main {
     private ActionListener selectButtonAction(JFrame mainFrame) {
         return e -> {
             mainFrame.dispose();
-            new Register(Objects.requireNonNull(nameCBox.getSelectedItem()).toString());
+            Register register = new Register(Objects.requireNonNull(nameCBox.getSelectedItem()).toString());
+            RegisterService registerService = new RegisterService(register);
+            registerService.createWindow();
         };
     }
 

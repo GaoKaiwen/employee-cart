@@ -1,8 +1,8 @@
 package gui;
 
+import utils.JMoneyField;
+
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class Register {
 
@@ -10,7 +10,7 @@ public class Register {
     private JLabel productLabel;
     private JTextField productField;
     private JLabel priceLabel;
-    private JTextField priceField;
+    private JFormattedTextField priceField;
     private JSpinner productQuantitySpinner;
     private JLabel quantityLabel;
     private JButton consultButton;
@@ -19,25 +19,58 @@ public class Register {
 
     public Register(String employee) {
         this.employee = employee;
-
-        JFrame frame = new JFrame("Register");
-        frame.setContentPane(panel2);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        frame.setTitle("Fiado - " + employee);
-        registerButton.addActionListener(registerButtonAction());
     }
 
+    public void cleanAllFields() {
+        productField.setText("");
+        priceField.setText("");
+        productQuantitySpinner.setValue(1);
+    }
 
     private void createUIComponents() {
         SpinnerNumberModel sm = new SpinnerNumberModel(1, 1, 100, 1);
         productQuantitySpinner = new JSpinner(sm);
+
+        priceField = new JMoneyField();
     }
 
-    private ActionListener registerButtonAction() {
-        //TODO
-        return null;
+    public JPanel getPanel2() {
+        return panel2;
+    }
+
+    public JLabel getProductLabel() {
+        return productLabel;
+    }
+
+    public JTextField getProductField() {
+        return productField;
+    }
+
+    public JLabel getPriceLabel() {
+        return priceLabel;
+    }
+
+    public JTextField getPriceField() {
+        return priceField;
+    }
+
+    public JSpinner getProductQuantitySpinner() {
+        return productQuantitySpinner;
+    }
+
+    public JLabel getQuantityLabel() {
+        return quantityLabel;
+    }
+
+    public JButton getConsultButton() {
+        return consultButton;
+    }
+
+    public JButton getRegisterButton() {
+        return registerButton;
+    }
+
+    public String getEmployee() {
+        return employee;
     }
 }
