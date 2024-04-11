@@ -46,7 +46,7 @@ public class RegisterService {
         return e -> {
             ProductModel product = new ProductModel();
             setProductInRegister(product);
-            fileService.saveProduct(product);
+            fileService.saveProduct(product, register.getEmployee());
             register.cleanAllFields();
             JOptionPane.showMessageDialog(null, product.getPrettyPrice());
         };

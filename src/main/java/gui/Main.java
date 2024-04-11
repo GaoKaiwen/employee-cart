@@ -14,34 +14,27 @@ public class Main {
     private JComboBox<String> nameCBox;
     private JButton selectButton;
 
-    public Main() {
-        frame = new JFrame("Main");
-        frame.setContentPane(panel1);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        frame.setTitle("Fiado");
-
-        nameCBox.addItem("Kaiwen");
-
-        selectButton.addActionListener(selectButtonAction(frame));
-    }
-
-    private ActionListener selectButtonAction(JFrame mainFrame) {
-        return e -> {
-            mainFrame.dispose();
-            Register register = new Register(Objects.requireNonNull(nameCBox.getSelectedItem()).toString());
-            RegisterService registerService = new RegisterService(register);
-            registerService.createWindow();
-        };
-    }
-
     public JFrame getFrame() {
         return frame;
     }
 
     public void setFrame(JFrame frame) {
         this.frame = frame;
+    }
+
+    public JPanel getPanel1() {
+        return panel1;
+    }
+
+    public JLabel getNameLabel() {
+        return nameLabel;
+    }
+
+    public JComboBox<String> getNameCBox() {
+        return nameCBox;
+    }
+
+    public JButton getSelectButton() {
+        return selectButton;
     }
 }
