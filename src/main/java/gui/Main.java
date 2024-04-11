@@ -1,10 +1,6 @@
 package gui;
 
-import service.RegisterService;
-
 import javax.swing.*;
-import java.awt.event.ActionListener;
-import java.util.Objects;
 
 public class Main {
 

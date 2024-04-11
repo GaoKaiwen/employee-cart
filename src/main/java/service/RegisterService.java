@@ -2,11 +2,10 @@ package service;
 
 import gui.Register;
 import model.ProductModel;
-import utils.BigDecimalUtils;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.math.BigDecimal;
+import java.io.IOException;
 
 import static utils.BigDecimalUtils.bigDecimalFromCurrencyString;
 
@@ -46,7 +45,11 @@ public class RegisterService {
         return e -> {
             ProductModel product = new ProductModel();
             setProductInRegister(product);
-            fileService.saveProduct(product, register.getEmployee());
+            try {
+                fileService.saveProduct(product, register.getEmployee());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             register.cleanAllFields();
             JOptionPane.showMessageDialog(null, product.getPrettyPrice());
         };
