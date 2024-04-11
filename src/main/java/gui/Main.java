@@ -9,6 +9,7 @@ public class Main {
     private JLabel nameLabel;
     private JComboBox<String> nameCBox;
     private JButton selectButton;
+    private JButton signUpButton;
 
     public JFrame getFrame() {
         return frame;
@@ -32,5 +33,9 @@ public class Main {
 
     public JButton getSelectButton() {
         return selectButton;
+    }
+
+    public JButton getSignUpButton() {
+        return signUpButton;
     }
 }

@@ -30,4 +30,21 @@ public class FileService {
         return employeesList;
     }
 
+    public boolean saveEmployee(String name) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter("src/main/java/utils/names.txt", true));
+        boolean saveSucceeded = false;
+        if(!isEmployeeRegistered(name)) {
+            bw.append(name + "\n");
+            saveSucceeded = true;
+        }
+        bw.close();
+        return saveSucceeded;
+    }
+
+    private boolean isEmployeeRegistered(String name) throws IOException {
+        List<String> employees = readEmployeesInFile();
+        return employees.stream()
+                .anyMatch(employee -> employee.equals(name));
+    }
+
 }

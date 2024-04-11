@@ -28,6 +28,7 @@ public class MainService {
     }
 
     private void fillEmployeesBox() throws IOException {
+        main.getNameCBox().removeAllItems();
         List<String> employeesList = fileService.readEmployeesInFile();
         employeesList.forEach(employee -> main.getNameCBox().addItem(employee));
     }
@@ -43,6 +44,7 @@ public class MainService {
 
     private void addListeners(JFrame frame) {
         main.getSelectButton().addActionListener(selectButtonListener(frame));
+        main.getSignUpButton().addActionListener(signUpButtonListener());
     }
 
     private ActionListener selectButtonListener(JFrame frame) {
@@ -51,6 +53,24 @@ public class MainService {
             Register register = new Register(Objects.requireNonNull(main.getNameCBox().getSelectedItem()).toString());
             RegisterService registerService = new RegisterService(register);
             registerService.createWindow();
+        };
+    }
+
+    private ActionListener signUpButtonListener() {
+        return e -> {
+            String name = JOptionPane.showInputDialog("Digite seu nome");
+            try {
+                if(!(name == null) && !name.isBlank()) {
+                    if(fileService.saveEmployee(name)) {
+                        JOptionPane.showMessageDialog(null, "Cadastrado com sucesso!");
+                        fillEmployeesBox();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Usuário já cadastrado!", "Erro ao cadastrar", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         };
     }
 
