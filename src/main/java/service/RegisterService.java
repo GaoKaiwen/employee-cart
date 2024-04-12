@@ -1,11 +1,11 @@
 package service;
 
+import exception.CsvParserException;
 import gui.Register;
 import model.ProductModel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.time.LocalDate;
 
 import static utils.BigDecimalUtils.bigDecimalFromCurrencyString;
@@ -48,8 +48,8 @@ public class RegisterService {
             setProductInRegister(product);
             try {
                 fileService.saveProduct(product, register.getEmployee());
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+            } catch (CsvParserException ex) {
+                throw new RuntimeException(ex); // FIXME: Show panel
             }
             register.cleanAllFields();
             JOptionPane.showMessageDialog(null, product.getPrettyPrice());

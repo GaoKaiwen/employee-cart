@@ -1,6 +1,8 @@
 package service;
 
+import exception.CsvParserException;
 import model.ProductModel;
+import utils.CsvParserUtils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -12,17 +14,8 @@ import java.util.List;
 
 public class FileService {
 
-    public void saveService() {}
-
-    public void saveProduct(ProductModel product, String employee) throws IOException {
-        saveProductInFile(product, employee);
-    }
-
-    private void saveProductInFile(ProductModel product, String employee) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(employee, true));
-        bw.append(product.getDescription() + " - " + product.getPrice() + " - " + product.getQuantity() + " - "
-                + product.getDate() + "\n");
-        bw.close();
+    public void saveProduct(ProductModel product, String employee) throws CsvParserException {
+        CsvParserUtils.addContentToFile(product, employee);
     }
 
     public List<String> readEmployeesInFile() throws IOException {
