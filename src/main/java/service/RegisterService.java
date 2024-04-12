@@ -6,6 +6,7 @@ import model.ProductModel;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.time.LocalDate;
 
 import static utils.BigDecimalUtils.bigDecimalFromCurrencyString;
 
@@ -59,6 +60,7 @@ public class RegisterService {
         product.setDescription(register.getProductField().getText());
         product.setPrice(bigDecimalFromCurrencyString(register.getPriceField().getText()));
         product.setQuantity(((int) register.getProductQuantitySpinner().getValue()));
+        product.setDate(LocalDate.now());
     }
 
 }

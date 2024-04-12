@@ -20,7 +20,8 @@ public class FileService {
 
     private void saveProductInFile(ProductModel product, String employee) throws IOException {
         BufferedWriter bw = new BufferedWriter(new FileWriter(employee, true));
-        bw.append(product.getDescription() + " - " + product.getPrice() + " - " + product.getQuantity() + "\n");
+        bw.append(product.getDescription() + " - " + product.getPrice() + " - " + product.getQuantity() + " - "
+                + product.getDate() + "\n");
         bw.close();
     }
 
