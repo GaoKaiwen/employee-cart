@@ -11,8 +11,8 @@ import java.util.Objects;
 
 public class MainService {
 
-    private Main main;
-    private FileService fileService;
+    private final Main main;
+    private final FileService fileService;
 
     public MainService(Main main) {
         this.main = main;

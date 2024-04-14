@@ -12,8 +12,8 @@ import static utils.BigDecimalUtils.bigDecimalFromCurrencyString;
 
 public class RegisterService {
 
-    private Register register;
-    private FileService fileService;
+    private final Register register;
+    private final FileService fileService;
 
     public RegisterService(Register register) {
         this.register = register;
