@@ -1,8 +1,9 @@
 package service;
 
-import exception.CsvParserException;
+import exception.CsvRepositoryException;
 import gui.Register;
 import model.ProductModel;
+import repository.csv.ProductCsvRepository;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -13,11 +14,9 @@ import static utils.BigDecimalUtils.bigDecimalFromCurrencyString;
 public class RegisterService {
 
     private final Register register;
-    private final FileService fileService;
 
     public RegisterService(Register register) {
         this.register = register;
-        fileService = new FileService();
     }
 
     public void createWindow() {
@@ -46,11 +45,14 @@ public class RegisterService {
         return e -> {
             ProductModel product = new ProductModel();
             setProductInRegister(product);
+
             try {
-                fileService.saveProduct(product, register.getEmployee());
-            } catch (CsvParserException ex) {
+                new ProductCsvRepository(register.getEmployee())
+                        .save(product);
+            } catch (CsvRepositoryException ex) {
                 throw new RuntimeException(ex); // FIXME: Show panel
             }
+
             register.cleanAllFields();
             JOptionPane.showMessageDialog(null, product.getPrettyPrice());
         };

@@ -14,21 +14,21 @@ import exception.CsvParserException;
 import model.ProductModel;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static java.lang.String.format;
 
 public class CsvParserUtils {
 
-    public static <T> void addContentToFile(T content, String filename) throws CsvParserException {
-        File file = createFileIfItDoesNotExists(filename);
+    public static <T> void addContentToFile(T content, Path filePath) throws CsvParserException {
+        Path file = createFileIfItDoesNotExists(filePath);
         if(isFileEmpty(file)) {
             writeCsv(file, content);
         } else {
@@ -36,32 +36,31 @@ public class CsvParserUtils {
         }
     }
 
-    public static File createFileIfItDoesNotExists(String filename) throws CsvParserException {
-        File file = new File(filename);
+    public static Path createFileIfItDoesNotExists(Path filePath) throws CsvParserException {
         try {
-            file.createNewFile();
+            filePath.toFile().createNewFile();
         } catch (IOException e) {
-            throw new CsvParserException(format("Failed to create file [%s].", file), e);
+            throw new CsvParserException(format("Failed to create file [%s].", filePath), e);
         }
-        return file;
+        return filePath;
     }
 
-    public static boolean isFileEmpty(File file) throws CsvParserException {
-        return getCsvHeaderFromFile(file) == null;
+    public static boolean isFileEmpty(Path filePath) throws CsvParserException {
+        return getCsvHeaderFromFile(filePath) == null;
     }
 
-    public static String[] getCsvHeaderFromFile(File file) throws CsvParserException {
-        try(CSVReader csvReader = new CSVReader(new FileReader(file))) {
+    public static String[] getCsvHeaderFromFile(Path filePath) throws CsvParserException {
+        try(CSVReader csvReader = new CSVReader(new FileReader(filePath.toFile()))) {
             return csvReader.readNext();
         } catch (FileNotFoundException e) {
-            throw new CsvParserException(format("File [%s] not found.", file), e);
+            throw new CsvParserException(format("File [%s] not found.", filePath), e);
         } catch (IOException | CsvValidationException e) {
-            throw new CsvParserException(format("Failed to read file [%s].", file), e);
+            throw new CsvParserException(format("Failed to read file [%s].", filePath), e);
         }
     }
 
-    public static <T> void writeCsv(File file, T content) throws CsvParserException {
-        try(FileWriter fileWriter = new FileWriter(file)) {
+    public static <T> void writeCsv(Path filePath, T content) throws CsvParserException {
+        try(FileWriter fileWriter = new FileWriter(filePath.toFile())) {
             new StatefulBeanToCsvBuilder<T>(fileWriter)
                     .withApplyQuotesToAll(true)
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
@@ -73,9 +72,9 @@ public class CsvParserUtils {
         }
     }
 
-    public static <T> void appendCsv(File file, T content) throws CsvParserException {
-        String[] header = getCsvHeaderFromFile(file);
-        try(FileWriter fileWriter = new FileWriter(file, true)) {
+    public static <T> void appendCsv(Path filePath, T content) throws CsvParserException {
+        String[] header = getCsvHeaderFromFile(filePath);
+        try(FileWriter fileWriter = new FileWriter(filePath.toFile(), true)) {
             new StatefulBeanToCsvBuilder<T>(fileWriter)
                     .withApplyQuotesToAll(true)
                     .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
@@ -87,14 +86,14 @@ public class CsvParserUtils {
         }
     }
 
-    public static <T> List<T> getObjectsFromCsvFile(File file, Class<T> contentClass) throws CsvParserException {
-        try (Reader reader = Files.newBufferedReader(file.toPath())) {
+    public static <T> List<T> getObjectsFromCsvFile(Path filePath, Class<T> contentClass) throws CsvParserException {
+        try (Reader reader = Files.newBufferedReader(filePath)) {
             CsvToBean<T> cb = new CsvToBeanBuilder<T>(reader)
                     .withType(contentClass)
                     .build();
             return cb.parse();
         } catch (IOException e) {
-            throw new CsvParserException(format("Failed to read file [%s].", file), e);
+            throw new CsvParserException(format("Failed to read file [%s].", filePath), e);
         }
     }
 

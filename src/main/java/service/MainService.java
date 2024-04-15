@@ -1,27 +1,27 @@
 package service;
 
-import exception.CsvParserException;
+import exception.CsvRepositoryException;
 import gui.Main;
 import gui.Register;
 import model.EmployeeModel;
+import repository.csv.EmployeeCsvRepository;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
 public class MainService {
 
     private final Main main;
-    private final FileService fileService;
+    private final EmployeeCsvRepository employeeCsvRepository;
 
     public MainService(Main main) {
         this.main = main;
-        fileService = new FileService();
+        employeeCsvRepository = new EmployeeCsvRepository();
     }
 
-    public void createWindow() throws IOException, CsvParserException {
+    public void createWindow() throws CsvRepositoryException {
         JFrame frame = new JFrame("Main");
         setDefaultFrame(frame);
         fillEmployeesBox();
@@ -29,9 +29,9 @@ public class MainService {
         addListeners(frame);
     }
 
-    private void fillEmployeesBox() throws IOException, CsvParserException {
+    private void fillEmployeesBox() throws CsvRepositoryException {
         main.getNameCBox().removeAllItems();
-        List<EmployeeModel> employeesList = fileService.readEmployeesInFile();
+        List<EmployeeModel> employeesList = employeeCsvRepository.findAll();
         employeesList.forEach(employee -> main.getNameCBox().addItem(employee.getName()));
     }
 
@@ -61,20 +61,16 @@ public class MainService {
     private ActionListener signUpButtonListener() {
         return e -> {
             String name = JOptionPane.showInputDialog("Digite seu nome");
-            try {
-                if(!(name == null) && !name.isBlank()) {
-                    if(fileService.saveEmployee(name)) {
-                        JOptionPane.showMessageDialog(null, "Cadastrado com sucesso!");
-                        fillEmployeesBox();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Usuário já cadastrado!", "Erro ao cadastrar", JOptionPane.ERROR_MESSAGE);
-                    }
+            if (!(name == null) && !name.isBlank()) {
+                try {
+                    EmployeeModel employeeModel = new EmployeeModel();
+                    employeeModel.setName(name);
+                    employeeCsvRepository.save(employeeModel);
+                    JOptionPane.showMessageDialog(null, "Cadastrado com sucesso!");
+                    fillEmployeesBox();
+                } catch (CsvRepositoryException ex) {
+                    JOptionPane.showMessageDialog(null, "Usuário já cadastrado!", "Erro ao cadastrar", JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (CsvParserException ex) {
-                //TODO: Handle CsvException
-                throw new RuntimeException(ex);
             }
         };
     }
