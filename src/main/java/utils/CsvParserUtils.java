@@ -2,6 +2,8 @@ package utils;
 
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.bean.MappingStrategy;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -17,6 +19,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.util.List;
 
 import static java.lang.String.format;
 
@@ -42,10 +47,10 @@ public class CsvParserUtils {
     }
 
     public static boolean isFileEmpty(File file) throws CsvParserException {
-        return getHeaderFromFile(file) == null;
+        return getCsvHeaderFromFile(file) == null;
     }
 
-    public static String[] getHeaderFromFile(File file) throws CsvParserException {
+    public static String[] getCsvHeaderFromFile(File file) throws CsvParserException {
         try(CSVReader csvReader = new CSVReader(new FileReader(file))) {
             return csvReader.readNext();
         } catch (FileNotFoundException e) {
@@ -69,7 +74,7 @@ public class CsvParserUtils {
     }
 
     public static <T> void appendCsv(File file, T content) throws CsvParserException {
-        String[] header = getHeaderFromFile(file);
+        String[] header = getCsvHeaderFromFile(file);
         try(FileWriter fileWriter = new FileWriter(file, true)) {
             new StatefulBeanToCsvBuilder<T>(fileWriter)
                     .withApplyQuotesToAll(true)
@@ -79,6 +84,17 @@ public class CsvParserUtils {
                     .write(content);
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
             throw new CsvParserException(format("Failed to append content [%s] to CSV [%s].", content, ProductModel.class.getName()), e);
+        }
+    }
+
+    public static <T> List<T> getObjectsFromCsvFile(File file, Class<T> contentClass) throws CsvParserException {
+        try (Reader reader = Files.newBufferedReader(file.toPath())) {
+            CsvToBean<T> cb = new CsvToBeanBuilder<T>(reader)
+                    .withType(contentClass)
+                    .build();
+            return cb.parse();
+        } catch (IOException e) {
+            throw new CsvParserException(format("Failed to read file [%s].", file), e);
         }
     }
 

@@ -1,7 +1,9 @@
 package service;
 
+import exception.CsvParserException;
 import gui.Main;
 import gui.Register;
+import model.EmployeeModel;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
@@ -19,7 +21,7 @@ public class MainService {
         fileService = new FileService();
     }
 
-    public void createWindow() throws IOException {
+    public void createWindow() throws IOException, CsvParserException {
         JFrame frame = new JFrame("Main");
         setDefaultFrame(frame);
         fillEmployeesBox();
@@ -27,10 +29,10 @@ public class MainService {
         addListeners(frame);
     }
 
-    private void fillEmployeesBox() throws IOException {
+    private void fillEmployeesBox() throws IOException, CsvParserException {
         main.getNameCBox().removeAllItems();
-        List<String> employeesList = fileService.readEmployeesInFile();
-        employeesList.forEach(employee -> main.getNameCBox().addItem(employee));
+        List<EmployeeModel> employeesList = fileService.readEmployeesInFile();
+        employeesList.forEach(employee -> main.getNameCBox().addItem(employee.getName()));
     }
 
     private void setDefaultFrame(JFrame frame) {
@@ -69,6 +71,9 @@ public class MainService {
                     }
                 }
             } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (CsvParserException ex) {
+                //TODO: Handle CsvException
                 throw new RuntimeException(ex);
             }
         };

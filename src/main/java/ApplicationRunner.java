@@ -1,10 +1,11 @@
+import exception.CsvParserException;
 import gui.Main;
 import service.MainService;
 
 import java.io.IOException;
 
 public class ApplicationRunner {
-    public void run() throws IOException {
+    public void run() throws IOException, CsvParserException {
         Main main = new Main();
         MainService mainService = new MainService(main);
 
