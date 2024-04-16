@@ -1,29 +1,58 @@
 package service;
 
+import exception.CsvParserException;
 import exception.CsvRepositoryException;
 import gui.Register;
-import model.ProductModel;
-import repository.csv.ProductCsvRepository;
+import model.Purchase;
+import repository.csv.PurchaseCsvRepository;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.util.List;
 
 import static utils.BigDecimalUtils.bigDecimalFromCurrencyString;
 
 public class RegisterService {
 
     private final Register register;
+    private final PurchaseCsvRepository purchaseCsvRepository;
+    private final DefaultTableModel model;
 
     public RegisterService(Register register) {
         this.register = register;
+        this.purchaseCsvRepository = new PurchaseCsvRepository();
+        this.model = new DefaultTableModel();
     }
 
     public void createWindow() {
         JFrame frame = new JFrame("Register");
         setDefaultFrame(frame);
+        register.getProductField().setHorizontalAlignment(JTextField.RIGHT);
+
+        populateTable();
+        register.getProductsTable().setEnabled(false);
 
         addListeners();
+    }
+
+    private void populateTable() {
+        try {
+            List<Purchase> purchaseList = purchaseCsvRepository.findAllByEmployee(register.getEmployee());
+            model.addColumn("Produto");
+            model.addColumn("Preço");
+            model.addColumn("Quantidade");
+            model.addColumn("Data");
+            purchaseList.forEach(purchase -> {
+                model.addRow(new Object[]{purchase.getDescription(), purchase.getPrice(), purchase.getQuantity(), purchase.getDate()});
+            });
+        } catch (CsvParserException e) {
+            throw new RuntimeException(e);
+        }
+        register.getProductsTable().setModel(model);
     }
 
     private void setDefaultFrame(JFrame frame) {
@@ -33,8 +62,6 @@ public class RegisterService {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         frame.setTitle("Fiado - " + register.getEmployee());
-
-        register.getProductField().setHorizontalAlignment(JTextField.RIGHT);
     }
 
     private void addListeners() {
@@ -43,26 +70,26 @@ public class RegisterService {
 
     private ActionListener registerButtonListener() {
         return e -> {
-            ProductModel product = new ProductModel();
-            setProductInRegister(product);
+            Purchase purchase = new Purchase();
+            setPurchaseInRegister(purchase);
 
             try {
-                new ProductCsvRepository(register.getEmployee())
-                        .save(product);
+                purchaseCsvRepository.save(purchase);
             } catch (CsvRepositoryException ex) {
                 throw new RuntimeException(ex); // FIXME: Show panel
             }
 
             register.cleanAllFields();
-            JOptionPane.showMessageDialog(null, product.getPrettyPrice());
+            JOptionPane.showMessageDialog(null, purchase.getPrettyPrice());
         };
     }
 
-    private void setProductInRegister(ProductModel product) {
-        product.setDescription(register.getProductField().getText());
-        product.setPrice(bigDecimalFromCurrencyString(register.getPriceField().getText()));
-        product.setQuantity(((int) register.getProductQuantitySpinner().getValue()));
-        product.setDate(LocalDate.now());
+    private void setPurchaseInRegister(Purchase purchase) {
+        purchase.setEmployee(register.getEmployee());
+        purchase.setDescription(register.getProductField().getText());
+        purchase.setPrice(bigDecimalFromCurrencyString(register.getPriceField().getText()));
+        purchase.setQuantity(((int) register.getProductQuantitySpinner().getValue()));
+        purchase.setDate(LocalDate.now());
     }
 
 }

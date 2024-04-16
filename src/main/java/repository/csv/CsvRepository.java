@@ -12,13 +12,13 @@ import static java.lang.String.format;
 
 public abstract class CsvRepository<T> implements Repository<T> {
 
-    protected static final Path BASE_FILE_PATH = Path.of("src", "main", "java");
+    private static final Path BASE_FILE_PATH = Path.of("src", "main", "java");
 
     private Path filePath;
     private Class<T> entityType;
 
     protected CsvRepository(Path filePath, Class<T> entityType) {
-        this.filePath = filePath;
+        this.filePath = BASE_FILE_PATH.resolve(filePath);
         this.entityType = entityType;
     }
 

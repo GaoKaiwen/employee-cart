@@ -1,6 +1,7 @@
 package utils;
 
-import javax.swing.*;
+import javax.swing.JFormattedTextField;
+import javax.swing.JTextField;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.text.AttributeSet;

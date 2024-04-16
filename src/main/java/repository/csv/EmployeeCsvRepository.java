@@ -1,10 +1,12 @@
 package repository.csv;
 
-import model.EmployeeModel;
+import model.Employee;
 
-public class EmployeeCsvRepository extends CsvRepository<EmployeeModel> {
+import java.nio.file.Path;
+
+public class EmployeeCsvRepository extends CsvRepository<Employee> {
 
     public EmployeeCsvRepository() {
-        super(BASE_FILE_PATH.resolve("names"), EmployeeModel.class);
+        super(Path.of("employee"), Employee.class);
     }
 }

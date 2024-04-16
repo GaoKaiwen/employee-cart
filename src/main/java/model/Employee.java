@@ -1,6 +1,6 @@
 package model;
 
-public class EmployeeModel {
+public class Employee {
 
     private String name;
 
@@ -11,4 +11,9 @@ public class EmployeeModel {
     public void setName(String name) {
         this.name = name;
     }
+    @Override
+    public String toString() {
+        return name;
+    }
+
 }

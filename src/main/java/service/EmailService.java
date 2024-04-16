@@ -38,7 +38,7 @@ public class EmailService {
         mimeBodyPart.setContent(msg, "text/html; charset=utf-8");
 
         MimeBodyPart mimeBodyPartReport = new MimeBodyPart();
-        mimeBodyPartReport.attachFile("src/main/resources/names");
+        mimeBodyPartReport.attachFile("src/main/resources/employee");
 
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(mimeBodyPart);

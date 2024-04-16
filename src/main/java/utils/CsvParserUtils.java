@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+import com.opencsv.bean.CsvToBeanFilter;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.bean.MappingStrategy;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -11,8 +12,9 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import com.opencsv.exceptions.CsvValidationException;
 import exception.CsvParserException;
-import model.ProductModel;
+import model.Purchase;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -68,7 +71,7 @@ public class CsvParserUtils {
                     .build()
                     .write(content);
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-            throw new CsvParserException(format("Failed to write content [%s] to CSV [%s].", content, ProductModel.class.getName()), e);
+            throw new CsvParserException(format("Failed to write content [%s] to CSV [%s].", content, Purchase.class.getName()), e);
         }
     }
 
@@ -82,19 +85,39 @@ public class CsvParserUtils {
                     .build()
                     .write(content);
         } catch (IOException | CsvRequiredFieldEmptyException | CsvDataTypeMismatchException e) {
-            throw new CsvParserException(format("Failed to append content [%s] to CSV [%s].", content, ProductModel.class.getName()), e);
+            throw new CsvParserException(format("Failed to append content [%s] to CSV [%s].", content, Purchase.class.getName()), e);
         }
     }
 
     public static <T> List<T> getObjectsFromCsvFile(Path filePath, Class<T> contentClass) throws CsvParserException {
+        return getObjectsFromCsvFile(filePath, contentClass, noCsvBeanFilter());
+    }
+
+    public static <T> List<T> getObjectsFromCsvFile(Path filePath, Class<T> contentClass, CsvToBeanFilter csvToBeanFilter) throws CsvParserException {
         try (Reader reader = Files.newBufferedReader(filePath)) {
             CsvToBean<T> cb = new CsvToBeanBuilder<T>(reader)
                     .withType(contentClass)
+                    .withFilter(csvToBeanFilter)
                     .build();
             return cb.parse();
         } catch (IOException e) {
             throw new CsvParserException(format("Failed to read file [%s].", filePath), e);
         }
+    }
+
+    public static CsvToBeanFilter noCsvBeanFilter() {
+        return line -> true;
+    }
+
+    public static CsvToBeanFilter csvBeanFilterByColumn(String column, String value, Path path) {
+        return line -> {
+            try {
+                int index = Arrays.asList(getCsvHeaderFromFile(path)).indexOf(column);
+                return StringUtils.equals(line[index], value);
+            } catch (CsvParserException e) {
+                throw new RuntimeException(e);
+            }
+        };
     }
 
     private static <T> MappingStrategy<T> createHeaderColumnNameMappingStrategy(T content) {

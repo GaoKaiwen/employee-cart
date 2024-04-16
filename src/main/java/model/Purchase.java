@@ -1,16 +1,27 @@
 package model;
 
+import com.opencsv.bean.CsvDate;
 import utils.BigDecimalUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class ProductModel {
+public class Purchase {
 
+    private String employee;
     private String description;
     private BigDecimal price;
     private int quantity;
+    @CsvDate(value = "yyyy-MM-dd")
     private LocalDate date;
+
+    public String getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(String employee) {
+        this.employee = employee;
+    }
 
     public String getDescription() {
         return description;

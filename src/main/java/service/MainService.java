@@ -3,10 +3,11 @@ package service;
 import exception.CsvRepositoryException;
 import gui.Main;
 import gui.Register;
-import model.EmployeeModel;
+import model.Employee;
 import repository.csv.EmployeeCsvRepository;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +32,7 @@ public class MainService {
 
     private void fillEmployeesBox() throws CsvRepositoryException {
         main.getNameCBox().removeAllItems();
-        List<EmployeeModel> employeesList = employeeCsvRepository.findAll();
+        List<Employee> employeesList = employeeCsvRepository.findAll();
         employeesList.forEach(employee -> main.getNameCBox().addItem(employee.getName()));
     }
 
@@ -63,13 +64,13 @@ public class MainService {
             String name = JOptionPane.showInputDialog("Digite seu nome");
             if (!(name == null) && !name.isBlank()) {
                 try {
-                    EmployeeModel employeeModel = new EmployeeModel();
-                    employeeModel.setName(name);
-                    employeeCsvRepository.save(employeeModel);
+                    Employee employee = new Employee();
+                    employee.setName(name);
+                    employeeCsvRepository.save(employee);
                     JOptionPane.showMessageDialog(null, "Cadastrado com sucesso!");
                     fillEmployeesBox();
                 } catch (CsvRepositoryException ex) {
-                    JOptionPane.showMessageDialog(null, "Usuário já cadastrado!", "Erro ao cadastrar", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Erro: verifique se o usuário já está cadastrado!", "Erro ao cadastrar", JOptionPane.ERROR_MESSAGE);
                 }
             }
         };

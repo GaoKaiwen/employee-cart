@@ -2,7 +2,15 @@ package gui;
 
 import utils.JMoneyField;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 public class Register {
 
@@ -13,8 +21,9 @@ public class Register {
     private JFormattedTextField priceField;
     private JSpinner productQuantitySpinner;
     private JLabel quantityLabel;
-    private JButton consultButton;
     private JButton registerButton;
+    private JScrollPane scrollPane;
+    private JTable productsTable;
     private String employee;
 
     public Register(String employee) {
@@ -62,15 +71,19 @@ public class Register {
         return quantityLabel;
     }
 
-    public JButton getConsultButton() {
-        return consultButton;
-    }
-
     public JButton getRegisterButton() {
         return registerButton;
     }
 
     public String getEmployee() {
         return employee;
+    }
+
+    public JScrollPane getScrollPane() {
+        return scrollPane;
+    }
+
+    public JTable getProductsTable() {
+        return productsTable;
     }
 }
