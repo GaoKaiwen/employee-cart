@@ -4,7 +4,8 @@ import com.opencsv.bean.CsvDate;
 import utils.BigDecimalUtils;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Purchase {
 
@@ -12,8 +13,9 @@ public class Purchase {
     private String description;
     private BigDecimal price;
     private int quantity;
-    @CsvDate(value = "yyyy-MM-dd")
-    private LocalDate date;
+    @CsvDate(value = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime dateTime;
+    private boolean isDeleted;
 
     public String getEmployee() {
         return employee;
@@ -51,11 +53,23 @@ public class Purchase {
         this.quantity = quantity;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public String getDateFormatted() {
+        return dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 }

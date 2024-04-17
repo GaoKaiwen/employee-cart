@@ -5,13 +5,13 @@ import exception.CsvRepositoryException;
 import gui.Register;
 import model.Purchase;
 import repository.csv.PurchaseCsvRepository;
+import utils.BigDecimalUtils;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static utils.BigDecimalUtils.bigDecimalFromCurrencyString;
@@ -47,7 +47,7 @@ public class RegisterService {
             model.addColumn("Quantidade");
             model.addColumn("Data");
             purchaseList.forEach(purchase -> {
-                model.addRow(new Object[]{purchase.getDescription(), purchase.getPrice(), purchase.getQuantity(), purchase.getDate()});
+                model.addRow(new Object[]{purchase.getDescription(), BigDecimalUtils.toPrettyWithRealSymbolString(purchase.getPrice()), purchase.getQuantity(), purchase.getDateFormatted()});
             });
         } catch (CsvParserException e) {
             throw new RuntimeException(e);
@@ -79,8 +79,8 @@ public class RegisterService {
                 throw new RuntimeException(ex); // FIXME: Show panel
             }
 
+            model.addRow(new Object[]{purchase.getDescription(), BigDecimalUtils.toPrettyWithRealSymbolString(purchase.getPrice()), purchase.getQuantity(), purchase.getDateTime()});
             register.cleanAllFields();
-            JOptionPane.showMessageDialog(null, purchase.getPrettyPrice());
         };
     }
 
@@ -89,7 +89,7 @@ public class RegisterService {
         purchase.setDescription(register.getProductField().getText());
         purchase.setPrice(bigDecimalFromCurrencyString(register.getPriceField().getText()));
         purchase.setQuantity(((int) register.getProductQuantitySpinner().getValue()));
-        purchase.setDate(LocalDate.now());
+        purchase.setDateTime(LocalDateTime.now());
     }
 
 }
