@@ -24,7 +24,11 @@ public class RegisterService {
 
     public RegisterService(Register register) {
         this.register = register;
-        this.purchaseCsvRepository = new PurchaseCsvRepository();
+        try {
+            this.purchaseCsvRepository = new PurchaseCsvRepository();
+        } catch (CsvRepositoryException e) {
+            throw new RuntimeException(e); // TODO: Handle exception
+        }
         this.model = new DefaultTableModel();
     }
 

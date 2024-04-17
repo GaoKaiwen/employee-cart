@@ -1,6 +1,7 @@
 package repository.csv;
 
 import exception.CsvParserException;
+import exception.CsvRepositoryException;
 import model.Purchase;
 import utils.CsvParserUtils;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public class PurchaseCsvRepository extends CsvRepository<Purchase> {
 
     private static final String COLUMN_EMPLOYEE = "EMPLOYEE";
-    public PurchaseCsvRepository() {
+    public PurchaseCsvRepository() throws CsvRepositoryException {
         super(Path.of("purchase"), Purchase.class);
     }
 

@@ -5,6 +5,8 @@ import exception.CsvRepositoryException;
 import repository.Repository;
 import utils.CsvParserUtils;
 
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -12,13 +14,11 @@ import static java.lang.String.format;
 
 public abstract class CsvRepository<T> implements Repository<T> {
 
-    private static final Path BASE_FILE_PATH = Path.of("src", "main", "java");
-
     private Path filePath;
     private Class<T> entityType;
 
-    protected CsvRepository(Path filePath, Class<T> entityType) {
-        this.filePath = BASE_FILE_PATH.resolve(filePath);
+    protected CsvRepository(Path filePath, Class<T> entityType) throws CsvRepositoryException {
+        this.filePath = filePathFrom(filePath);
         this.entityType = entityType;
     }
 
@@ -35,6 +35,15 @@ public abstract class CsvRepository<T> implements Repository<T> {
             return CsvParserUtils.getObjectsFromCsvFile(filePath, entityType);
         } catch (CsvParserException e) {
             throw new CsvRepositoryException(format("Failed to find all [%s] entities.", entityType.getName()), e);
+        }
+    }
+
+    private Path filePathFrom(Path filePath) throws CsvRepositoryException {
+        URL resource = CsvRepository.class.getClassLoader().getResource(filePath.toString());
+        try {
+            return Path.of(resource.toURI());
+        } catch (URISyntaxException e) {
+            throw new CsvRepositoryException(format("Failed to get URI [%s].", resource), e);
         }
     }
 

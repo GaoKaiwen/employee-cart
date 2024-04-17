@@ -19,7 +19,11 @@ public class MainService {
 
     public MainService(Main main) {
         this.main = main;
-        employeeCsvRepository = new EmployeeCsvRepository();
+        try {
+            employeeCsvRepository = new EmployeeCsvRepository();
+        } catch (CsvRepositoryException e) {
+            throw new RuntimeException(e); // TODO: Handle exception
+        }
     }
 
     public void createWindow() throws CsvRepositoryException {
