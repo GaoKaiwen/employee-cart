@@ -1,7 +1,6 @@
 package model;
 
 import com.opencsv.bean.CsvDate;
-import utils.BigDecimalUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,6 +15,7 @@ public class Purchase {
     @CsvDate(value = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime dateTime;
     private boolean isDeleted;
+    private String deletionJustification;
 
     public String getEmployee() {
         return employee;
@@ -35,10 +35,6 @@ public class Purchase {
 
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public String getPrettyPrice() {
-        return BigDecimalUtils.toPrettyString(price);
     }
 
     public void setPrice(BigDecimal price) {
@@ -71,5 +67,13 @@ public class Purchase {
 
     public String getDateFormatted() {
         return dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+
+    public String getDeletionJustification() {
+        return deletionJustification;
+    }
+
+    public void setDeletionJustification(String deletionJustification) {
+        this.deletionJustification = deletionJustification;
     }
 }

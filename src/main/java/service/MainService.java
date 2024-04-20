@@ -65,7 +65,7 @@ public class MainService {
 
     private ActionListener signUpButtonListener() {
         return e -> {
-            String name = JOptionPane.showInputDialog("Digite seu nome");
+            String name = JOptionPane.showInputDialog(null, "Digite seu nome:", "Cadastro", JOptionPane.PLAIN_MESSAGE);
             if (!(name == null) && !name.isBlank()) {
                 try {
                     Employee employee = new Employee();

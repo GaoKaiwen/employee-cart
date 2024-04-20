@@ -24,6 +24,7 @@ public class Register {
     private JButton registerButton;
     private JScrollPane scrollPane;
     private JTable productsTable;
+    private JButton cancelButton;
     private String employee;
 
     public Register(String employee) {
@@ -85,5 +86,9 @@ public class Register {
 
     public JTable getProductsTable() {
         return productsTable;
+    }
+
+    public JButton getCancelButton() {
+        return cancelButton;
     }
 }
